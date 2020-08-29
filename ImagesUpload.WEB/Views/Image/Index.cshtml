@@ -1,0 +1,132 @@
+﻿@*@model IEnumerable<ImageModel>*@
+@model ImagesUpload.WEB.Utils.PaginatedList<ImageModel>
+
+@{
+    ViewData["Title"] = "Images Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var error = TempData["error"] as string;
+    var success = TempData["success"] as string;
+    var count = 20 * (Model.PageIndex - 1) + 1;
+    var countEnd = count + 19;
+}
+<style>
+    .image-parent {
+        height: 300px;
+    }
+</style>
+<div class="container">
+    @if (!string.IsNullOrEmpty(error))
+    {
+        <div class="alert alert-danger" style="padding: 10px">
+            <ul>
+                <li>@error</li>
+            </ul>
+        </div>
+    }
+    @if (!string.IsNullOrEmpty(success))
+    {
+        <div class="alert alert-success" style="padding: 10px">
+            <ul>
+                <li>@success</li>
+            </ul>
+        </div>
+    }
+    <br />
+    <div class="form-group" style="text-align:center">
+        <h1 style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"><i class="fa fa-camera"></i><b> Home</b></h1>
+    </div><br />
+    @using (Html.BeginForm("Index", "Image", FormMethod.Get))
+    {
+        <div class="card">
+            <div class="card-header">
+                <h5 style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">Filters</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="form-inline">
+                        <div class="form-group mb-2">
+                            <label>By Description:  </label>&nbsp;
+                            @Html.TextBox("desc", ViewBag.Description as string, new { @placeholder = "Description", @class = "form-control", @autocomplete = "off" })
+                        </div>
+                        <div class="form-group mx-sm-3 mb-2">
+                            <label>By Size:  </label>&nbsp;
+                            @Html.TextBox("FileSize", ViewBag.FileSize as string, new { @placeholder = "Size in KB", @class = "form-control", @autocomplete = "off" })
+                        </div>
+                        <div class="form-group mx-sm-3 mb-2">
+                            <label>By Type:  </label>&nbsp;
+                            @Html.DropDownList("filetype", new List<SelectListItem>
+                                                     {
+                                                         new SelectListItem() {Text = "Select Image Type", Value = ""},
+                                                         new SelectListItem() {Text = "JPEG", Value = "image/jpeg"},
+                                                         new SelectListItem() {Text = "JPG", Value = "image/jpeg"},
+                                                         new SelectListItem() {Text = "PNG", Value = "image/png"}
+
+                                                     }, new { @class = "form-control" })
+                        </div>
+                        <button type="submit" class="btn btn-primary mb-2"><i class="fa fa-search"></i> Search</button>
+                    </div>
+                </div>
+            </div>
+        </div><br />
+    }
+
+    <div class="container">
+        <div class="row padded">
+            @if (Model.Count() > 0)
+            {
+                @foreach (var item in Model)
+                {
+                    <div class="col-12 col-sm-8 col-lg-5" style="padding:20px;text-align:center; align-items:center;">
+
+                        <ul class="list-group" style="border-radius: 25px;">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div class="image-parent">
+                                    <a target="_blank" href="~/images/@item.Path">
+                                        <img src="~/images/@item.Path" class="img-fluid" alt="things" />
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                        <h4 class="text-muted">Image Description: @item.Description</h4>
+                        <h6 class="text-muted">Image Size: @item.FileSize KB</h6>
+                        <h6 class="text-muted">Image Type: @item.FileType</h6>
+                        <h6 class="text-muted">Uploaded: @item.Span</h6>
+                        <a target="_blank" href="~/images/@item.Path">
+                            <h6 class="text-muted">Click to Open Image</h6>
+                        </a>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="container" style="padding: 20px; text-align:center;">
+                    <div class="alert alert-danger">
+                        No Images Found
+                    </div>
+                </div>
+
+            }
+        </div>
+    </div>
+    @{
+        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    }
+    <div class="col-sm-5">
+        <div class="dataTables_info" id="demo-dynamic-tables-2_info" role="status" aria-live="polite">Showing @count to @countEnd of @Model.Count entries</div>
+    </div><br />
+    <a asp-action="Index"
+       asp-route-sortOrder="@ViewData["CurrentSort"]"
+       asp-route-pageNumber="@(Model.PageIndex - 1)"
+       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+       class="btn btn-secondary @prevDisabled">
+        Previous
+    </a>
+    <a asp-action="Index"
+       asp-route-sortOrder="@ViewData["CurrentSort"]"
+       asp-route-pageNumber="@(Model.PageIndex + 1)"
+       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+       class="btn btn-secondary @nextDisabled">
+        Next
+    </a>
+</div>
