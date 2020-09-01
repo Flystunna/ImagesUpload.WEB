@@ -50,6 +50,7 @@ Default user is {
 
 However users can register. There is a register link in the navbar and underneath the login button.
 
+To build and run the application. Make sure .net core 3.1 SDK is installed
 
 To build and run the application 
 If Visual Studio is installed on the Server this application is cloned to.
