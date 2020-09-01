@@ -8,6 +8,8 @@
     var success = TempData["success"] as string;
     var count = 20 * (Model.PageIndex - 1) + 1;
     var countEnd = count + 19;
+    var total = TempData["count"] as int?;
+
 }
 <style>
     .image-parent {
@@ -46,11 +48,11 @@
                     <div class="form-inline">
                         <div class="form-group mb-2">
                             <label>By Description:  </label>&nbsp;
-                            @Html.TextBox("desc", ViewBag.Description as string, new { @placeholder = "Description", @class = "form-control", @autocomplete = "off" })
+                            @Html.TextBox("desc", ViewBag.Description as string, new { @id = "desc", @placeholder = "Description", @class = "form-control", @autocomplete = "off" })
                         </div>
                         <div class="form-group mx-sm-3 mb-2">
                             <label>By Size:  </label>&nbsp;
-                            @Html.TextBox("FileSize", ViewBag.FileSize as string, new { @placeholder = "Size in KB", @class = "form-control", @autocomplete = "off" })
+                            @Html.TextBox("FileSize", ViewBag.FileSize as string, new { @id = "FileSize", @placeholder = "Size in KB", @class = "form-control", @autocomplete = "off" })
                         </div>
                         <div class="form-group mx-sm-3 mb-2">
                             <label>By Type:  </label>&nbsp;
@@ -61,9 +63,22 @@
                                                          new SelectListItem() {Text = "JPG", Value = "image/jpeg"},
                                                          new SelectListItem() {Text = "PNG", Value = "image/png"}
 
-                                                     }, new { @class = "form-control" })
+                                                     }, new { @id = "filetype", @class = "form-control" })
                         </div>
-                        <button type="submit" class="btn btn-primary mb-2"><i class="fa fa-search"></i> Search</button>
+                        <div class="form-group mx-sm-3 mb-2">
+                            <label>Sort Order:  </label>&nbsp;
+                            @Html.DropDownList("sortOrder", new List<SelectListItem>
+                                                     {
+                                                         new SelectListItem() {Text = "Sort By", Value = ""},
+                                                         new SelectListItem() {Text = "Description", Value = "desc"},
+                                                         new SelectListItem() {Text = "Date Created (Ascending)", Value = "dateasc"},
+                                                         new SelectListItem() {Text = "Date Created (Descending)", Value = "date"},                                                       
+                                                         new SelectListItem() {Text = "File Size (Ascending)", Value = "sizeasc"},
+                                                         new SelectListItem() {Text = "File Size (Descending)", Value = "size"},
+
+                                                     }, new { @id = "sortOrder", @class = "form-control" })
+                        </div>
+                        <button type="submit" onclick="return Search()" class="btn btn-primary mb-2"><i class="fa fa-search"></i> Search</button>
                     </div>
                 </div>
             </div>
@@ -113,7 +128,7 @@
         var nextDisabled = !Model.HasNextPage ? "disabled" : "";
     }
     <div class="col-sm-5">
-        <div class="dataTables_info" id="demo-dynamic-tables-2_info" role="status" aria-live="polite">Showing @count to @countEnd of @Model.Count entries</div>
+        <div class="dataTables_info" id="demo-dynamic-tables-2_info" role="status" aria-live="polite">Showing @count to @countEnd of @total entries</div>
     </div><br />
     <a asp-action="Index"
        asp-route-sortOrder="@ViewData["CurrentSort"]"
@@ -130,3 +145,18 @@
         Next
     </a>
 </div>
+@section Scripts{
+    <script>
+        function Search() {
+            var desc = $('#desc').val();
+            var FileSize = $('#FileSize').val();
+            var filetype = $('#filetype').val();
+            var sortOrder = $('#sortOrder').val();
+            if (desc == "" && FileSize == "" && filetype == "" && sortOrder == "") {
+                swal("", "Choose at least one filter", "error")
+                return false;
+            }
+            else return true;
+        }
+    </script>
+}

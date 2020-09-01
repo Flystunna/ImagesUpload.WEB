@@ -8,10 +8,131 @@
 @section Styles{
 
     <style>
+        .loader,
+        .loader:before,
+        .loader:after {
+            background: #16487e;
+            -webkit-animation: load1 1s infinite ease-in-out;
+            animation: load1 1s infinite ease-in-out;
+            width: 1em;
+            height: 4em;
+        }
+
+        .loader {
+            color: #16487e;
+            text-indent: -9999em;
+            margin: 88px auto;
+            position: absolute;
+            left: 50%;
+            top: 30%;
+            font-size: 11px;
+            -webkit-transform: translateZ(0);
+            -ms-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-animation-delay: -0.16s;
+            animation-delay: -0.16s;
+        }
+
+            .loader:before,
+            .loader:after {
+                position: absolute;
+                top: 0;
+                content: '';
+            }
+
+            .loader:before {
+                left: -1.5em;
+                -webkit-animation-delay: -0.32s;
+                animation-delay: -0.32s;
+            }
+
+            .loader:after {
+                left: 1.5em;
+            }
+
+        @@-webkit-keyframes load1 {
+
+            0%,
+            80%,
+            100% {
+                box-shadow: 0 0;
+                height: 4em;
+            }
+
+            40% {
+                box-shadow: 0 -2em;
+                height: 5em;
+            }
+        }
+
+        @@keyframes load1 {
+
+            0%,
+            80%,
+            100% {
+                box-shadow: 0 0;
+                height: 4em;
+            }
+
+            40% {
+                box-shadow: 0 -2em;
+                height: 5em;
+            }
+        }
+
+        .loader2,
+        .loader2:after {
+            border-radius: 50%;
+            width: 10em;
+            height: 10em;
+        }
+
+        .loader2 {
+            margin: 60px auto;
+            font-size: 10px;
+            position: relative;
+            text-indent: -9999em;
+            border-top: 1.1em solid rgba(22, 72, 126, 0.2);
+            border-right: 1.1em solid rgba(22, 72, 126, 0.2);
+            border-bottom: 1.1em solid rgba(22, 72, 126, 0.2);
+            border-left: 1.1em solid #16487e;
+            -webkit-transform: translateZ(0);
+            -ms-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-animation: load8 1.1s infinite linear;
+            animation: load8 1.1s infinite linear;
+        }
+
+        @@-webkit-keyframes load8 {
+            0% {
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+
+        @@keyframes load8 {
+            0% {
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
     </style>
 
 }
-<div class="container">
+<div class="loader" hidden id="loader">Loading...</div>
+
+<div class="loader2" hidden id="preloader">Loading...</div>
+<div class="container" id="uploadform">
     @if (!string.IsNullOrEmpty(error))
     {
         <div class="alert alert-danger" style="padding: 10px">
@@ -36,23 +157,23 @@
         @using (Html.BeginForm("PostImage", "Image", FormMethod.Post, new { @class = "m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed", enctype = "multipart/form-data" }))
         {
             <div class="form-group">
-                <label>Image:</label>
+                <label>Image (Allows Drag and Drop and Multiple Files Upload) :</label>
                 <div class="m-input-icon m-input-icon--right">
-                    <input class="form-control m-input" id="pics" AllowMultiple="true" type="file" multiple readonly asp-for="Pictures">
+                    <input class="form-control m-input" style="height:100px !important" id="pics" AllowMultiple="true" type="file" multiple readonly asp-for="Pictures">
                     <div class="form-control-feedback"><span asp-validation-for="Pictures"></span></div>
                 </div>
             </div><br />
             <div class="form-group">
                 <label>Description of Image:</label>
                 <div class="m-input-icon m-input-icon--right">
-                    <input type="text" id="Description" name="Description" autocomplete="off" class="form-control" asp-for="Description" placeholder="Enter Description Of Image" />
+                    <input type="text" id="Description" name="Description" style="height:70px !important" autocomplete="off" class="form-control" asp-for="Description" placeholder="Enter Description Of Image" />
                 </div>
             </div>
             <div class="m-portlet__foot m-portlet__no-border m-portlet__foot--fit">
                 <div class="m-form__actions m-form__actions--solid">
                     <div class="row">
                         <div class="col-lg-12 m--align-right" style="text-align:center">
-                            <button type="submit" class="btn btn-warning" id="btncreate"> <i class="fa fa-edit"></i>  Submit </button>
+                            <button type="submit" class="btn btn-lg btn-warning" onclick="ShowLoading()" id="btncreate"> <i class="fa fa-edit"></i>  Submit </button>
                         </div>
                     </div>
                 </div>
@@ -61,3 +182,21 @@
 
     </div>
 </div>
+@section Scripts
+{
+    <script>
+        function ShowLoading() {
+            $("#uploadform").waitMe({
+                effect: 'timer',
+                text: 'Uploading...',
+                background: '#dddcdcfa',
+                maxSize: '',
+                waitTime: -1,
+                textPos: 'vertical',
+                fontSize: '',
+                source: '',
+                onClose: function () { }
+            });
+        } 
+    </script>
+}

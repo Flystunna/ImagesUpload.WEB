@@ -1,0 +1,77 @@
+﻿@model LoginModel
+@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Login";
+    var error = TempData["error"] as string;
+    var success = TempData["success"] as string;
+}
+
+<div class="container" style="padding:50px;">
+    @if (!string.IsNullOrEmpty(error))
+    {
+        <div class="alert alert-danger" style="padding: 10px">
+            <ul>
+                <li>@error</li>
+            </ul>
+        </div>
+    }
+    @if (!string.IsNullOrEmpty(success))
+    {
+        <div class="alert alert-success" style="padding: 10px">
+            <ul>
+                <li>@success</li>
+            </ul>
+        </div>
+    }
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header" style="text-align:center;">
+                <h1><i class="fa fa-home"></i> Login</h1>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <section>
+                            <form id="account" asp-route="Login" method="post">
+                                <hr />
+                                <div asp-validation-summary="All" class="text-danger"></div>
+                                <div class="form-group">
+                                    <label asp-for="Username"></label>
+                                    <input asp-for="Username" class="form-control" />
+                                    <span asp-validation-for="Username" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Password"></label>
+                                    <input asp-for="Password" class="form-control" />
+                                    <span asp-validation-for="Password" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <div class="checkbox">
+                                        <label asp-for="RememberMe">
+                                            <input asp-for="RememberMe" />
+                                            @Html.DisplayNameFor(m => m.RememberMe)
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-submit"></i>  Log in</button>
+                                </div>
+                                <div class="form-group">
+                                    <p>
+                                        @*<a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>*@
+                                    </p>
+                                    <p>
+                                        <a asp-action="Signup" asp-controller="Account">Register as a new user</a>
+                                    </p>
+                                </div>
+                            </form>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
