@@ -53,7 +53,7 @@ However users can register. There is a register link in the navbar and underneat
 To build and run the application. Make sure .net core 3.1 SDK is installed
 
 To build and run the application 
-If Visual Studio is installed on the Server this application is cloned to.
+If Visual Studio 2019 is installed on the Server this application is cloned to.
 Just open the solution file and run in release Mode.
 
 
